@@ -19,26 +19,25 @@
 (defn line-colour [colour]
   (set! (.-strokeStyle ctx) colour))
 
-(defn line-width! [w]
+(defn line-width [w]
   (set! (.-lineWidth ctx) w))
 
-(defn line [u v]
-  (.beginPath ctx)
-  (let [[x y] u]
-    (.moveTo ctx x y))
-  (let [[x y] v]
-    (.lineTo ctx x y))
-  (.stroke ctx))
+(defn move-to [ctx {:keys [x y]}]
+  (.moveTo ctx x y))
+
+(defn line-to [ctx {:keys [x y]}]
+  (.lineTo ctx x y))
 
 (defn path
   "Using `points` (in the form `{:x :y}`) draws a line
    to the canvas"
-  [{:keys [x y]} & points]
-  (.beginPath ctx)
-  (.moveTo ctx x y)
-  (doseq [{:keys [x y]} points]
-    (.lineTo ctx x y))
-  (.stroke ctx))
+  [[a b & tail]]
+    (.beginPath ctx)
+    (move-to ctx a)
+    (line-to ctx b)
+    (doseq [x tail]
+      (line-to ctx x))
+    (.stroke ctx))
 
 (defn translate [x y]
   (.translate ctx x y))
@@ -53,18 +52,18 @@
 
 (defn grid
   "Divide canvas up into `rows` and `cols` separated by `gap`. `cell-fn` should
-   return normalised path points. grid will call cell-fn once for each cell
-   defined by rows * cols. Returns a list of paths adjusted to absolute canvas size."
+   return a vector of normalised points. `cell-fn` is called once for each cell
+   (defined by rows * cols). Returns a list of paths adjusted to absolute canvas size."
   [rows cols gap cell-fn]
   (let [width (:width @state)
         height (:height @state)
         col-width (/ (- width (* gap (dec cols))) cols)
         row-height (/ (- height (* gap (dec rows))) rows)]
-    (for [[n r c] (map cons (range (* cols rows))
+    (for [[n c r] (map cons (range (* cols rows))
                             (for [c (range cols) r (range rows)] [c r]))
           :let [col-pos (* c (+ gap col-width))
                 row-pos (* r (+ gap row-height))]]
-      (map (fn [{:keys [x y]}]
+      (map (fn [[x y]]
              {:x (+ col-pos (* col-width x))
               :y (+ row-pos (* row-height y))}) (cell-fn n)))))
 
