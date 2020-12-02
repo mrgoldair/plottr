@@ -13,3 +13,8 @@
               [[-1 -1 1] [1 -1 1]]]]
      (map (fn [[p p']] (partition 3 (map (partial * r) (concat p p')))) seg))))
 
+(defn square
+  ""
+  []
+  [[0 0] [0 1] [1 1] [1 0] [0 0]])
+

@@ -79,16 +79,16 @@
   ([r n]
    (let [points (->> (take n (iterate (partial + (/ Math/PI 180)) 0))
                      (map (fn [n] (point (Math/cos n) (Math/sin n)))))]
-     (apply line (map (fn [{:keys [x y]}] (point (* r x) (* r y))) points)))))
+     (path (map (fn [{:keys [x y]}] (point (* r x) (* r y))) points)))))
 
 (defn animate [setup-fn draw-fn]
   (letfn [(foo [time]
-            (.requestAnimationFrame js/window foo)
-            (.resetTransform ctx)
-            (.clearRect ctx 0 0 1000 1000)
-            (setup-fn)
-            (let [ms (/ time 1000)]
-              (draw-fn (merge {:t ms} @state))))]
+           (.requestAnimationFrame js/window foo)
+           (.resetTransform ctx)
+           (.clearRect ctx 0 0 (:width @state) (:height @state))
+           (setup-fn)
+           (let [ms (/ time 1000)]
+             (draw-fn (merge {:t ms} @state))))]
     (.requestAnimationFrame js/window foo)))
 
 (defn plot

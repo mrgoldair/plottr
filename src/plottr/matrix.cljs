@@ -1,12 +1,4 @@
-(ns plottr.sketch
-  (:require [plottr.core :as p]
-            [plottr.path :as path]))
-
-(defn setup
-  ""
-  []
-  (p/background "hsla(24,70%,80%,.3)")
-  (p/line-colour "hsla(24,70%,80%,.75)"))
+(ns plottr.matrix)
 
 (defn scale
   "Scale vector `v` by scalar `s`"
@@ -23,6 +15,12 @@
   "Returns a new space defined by the composition of one matrix, `m`, by another matrix, `n`"
   [m n]
   (map (partial mv m) n))
+
+(defn rotate-z
+  "2x2 matrix defining a rotation about the z-axis"
+  [theta]
+  [[(Math/cos theta) (Math/sin theta)]
+   [(- (Math/sin theta)) (Math/cos theta)]])
 
 (defn xrotate
   "3x3 matrix defining a rotation about the x-axis"
@@ -46,15 +44,5 @@
    [0 0 1]])
 
 ;; perspective
-(defn iso [x y]
-  (mm (xrotate x) (yrotate y)))
-
-(defn draw [{:keys [t mouse-x mouse-y]}]
-  (p/translate 500 500)
-  (let [transform (partial mv (iso mouse-y mouse-x))]
-    (doseq [[p p'] (map #(map transform %) (path/cube 50))]
-      (p/line p p'))))
-
-(p/plot {:size [1000 1000]
-         :setup setup
-         :draw draw})
+(defn iso [x-angle y-angle]
+  (mm (xrotate x-angle) (yrotate y-angle)))
