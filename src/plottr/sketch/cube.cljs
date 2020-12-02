@@ -9,7 +9,7 @@
   (p/background "hsla(24,70%,80%,.3)")
   (p/line-colour "hsla(24,70%,80%,.75)"))
 
-(defn draw [{:keys [t mouse-x mouse-y]}]
+(defn draw [{:keys [_ mouse-x mouse-y]}]
   (p/translate 500 500)
   ;; mouse-pos as iso(metric) angle
   (let [transform (partial m/mv (m/iso mouse-y mouse-x))]

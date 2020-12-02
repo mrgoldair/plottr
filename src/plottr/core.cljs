@@ -73,14 +73,6 @@
   ([x y z]
    {:x x :y y :z z}))
 
-;; path generator
-(defn circle
-  ([r] (circle r 360))
-  ([r n]
-   (let [points (->> (take n (iterate (partial + (/ Math/PI 180)) 0))
-                     (map (fn [n] (point (Math/cos n) (Math/sin n)))))]
-     (path (map (fn [{:keys [x y]}] (point (* r x) (* r y))) points)))))
-
 (defn animate [setup-fn draw-fn]
   (letfn [(foo [time]
            (.requestAnimationFrame js/window foo)
