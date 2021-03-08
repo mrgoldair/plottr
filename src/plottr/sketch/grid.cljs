@@ -12,8 +12,10 @@
 (defn draw
   "Repeatedly called"
   [_]
-  (doseq [path (p/grid 1 15 5 path/square)]
-    (p/path path)))
+  (doseq [path (p/grid 15 3 5 path/square)]
+    (p/path path))
+
+ (p/path [(p/point 0 0) (p/point 750 740)]))
 
 (p/plot {:size [1500 1500]
          :setup setup
